@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SudokuPad Bet Tree
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Add a bet tree control to SudokuPad
 // @author       Chameleon
 // @updateURL    https://github.com/yusitnikov/sudokupad-bet-tree/raw/main/sudokupad-bet-tree.user.js
@@ -94,10 +94,10 @@ window.addEventListener('DOMContentLoaded', () => {
 				}
 			}));
 			g.appendChild(this.renderPart({
-				type: 'polygon',
+				type: 'path',
 				attr: {
 					fill: '#0c0',
-					points: [
+					d: "M " + [
 						[0, -1],
 						[1, 0],
 						[0.5, 0],
@@ -107,7 +107,7 @@ window.addEventListener('DOMContentLoaded', () => {
 						[-1, 0],
 					]
 						.map(([x, y]) => `${translateX(x)},${translateY(y)}`)
-						.join(" "),
+						.join(" L") + " Z",
 				}
 			}));
 			return g;
