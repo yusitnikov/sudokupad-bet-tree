@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SudokuPad Bet Tree
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.7
 // @description  Add a bet tree control to SudokuPad
 // @author       Chameleon
 // @updateURL    https://github.com/yusitnikov/sudokupad-bet-tree/raw/main/sudokupad-bet-tree.user.js
@@ -38,26 +38,100 @@ window.addEventListener('DOMContentLoaded', () => {
 				opacity,
 			}
 		}))
+		const renderCircle = (g, fill, cx, cy, r, opacity = 1) => renderPath(g, fill, [
+			[cx, cy + r],
+			['Q', cx + r, cy + r, cx + r, cy],
+			['T', cx, cy - r],
+			['T', cx - r, cy],
+			['T', cx, cy + r],
+		], opacity);
+
+		const themes = {
+			default: g => {
+				g.appendChild(renderer.renderPart({
+					type: 'rect',
+					attr: {
+						fill: '#c80',
+						x: translateX(-0.25),
+						y: translateY(0.5),
+						width: scale(0.5),
+						height: scale(0.5),
+					}
+				}));
+				renderPath(g, '#0c0', [
+					[0, -1],
+					[1, 0],
+					[0.5, 0],
+					[1, 0.5],
+					[-1, 0.5],
+					[-0.5, 0],
+					[-1, 0],
+				]);
+			},
+			christmas: g => {
+				themes.default(g);
+
+				const ch = renderer.renderPart({type: 'g'});
+
+				const renderToy = (fill, cx, cy, r) => {
+					renderCircle(ch, fill, cx, cy, r);
+					renderCircle(ch, '#fff', cx - r * 0.3, cy - r * 0.3, r * 0.3, 0.7);
+				};
+				const renderCurve = (points) => renderPath(ch, '#4e4', points);
+
+				renderCurve([
+					[0.2, -0.8],
+					['Q', 0, -0.6, -0.4, -0.6],
+					['L', -0.45, -0.55],
+					['Q', 0, -0.55, 0.24, -0.76],
+				]);
+				renderCurve([
+					[0.5, -0.5],
+					['Q', 0, -0.2, -0.82, -0.18],
+					['L', -0.87, -0.13],
+					['Q', 0, -0.15, 0.54, -0.46],
+				]);
+				renderCurve([
+					[0.8, -0.2],
+					['Q', 0, 0.2, -0.75, 0.25],
+					['L', -0.8, 0.3],
+					['Q', 0, 0.25, 0.84, -0.16],
+				]);
+				renderCurve([
+					[0.75, 0.25],
+					['Q', 0.4, 0.4, 0.05, 0.5],
+					['L', 0.25, 0.5],
+					['Q', 0.5, 0.4, 0.79, 0.29],
+				]);
+				renderToy('#f00', -0.3, -0.5, 0.1);
+				renderToy('#00f', 0.2, -0.55, 0.1);
+				renderToy('#fc0', 0.1, -0.1, 0.1);
+				renderToy('#f00', 0.6, -0.2, 0.1);
+				renderToy('#00f', 0.3, 0.35, 0.1);
+				renderToy('#fc0', 0.75, 0.3, 0.1);
+				renderToy('#f00', -0.2, 0.3, 0.1);
+				renderToy('#00f', -0.45, -0.05, 0.1);
+				renderToy('#fc0', -0.65, 0.4, 0.1);
+				renderPath(ch, '#fd0', [
+					[0, -1.333],
+					[0.196, -0.73],
+					[-0.317, -1.103],
+					[0.317, -1.103],
+					[-0.196, -0.73],
+				]);
+				renderCircle(ch, '#fff', -0.03, -1.02, 0.03, 0.7);
+				g.appendChild(ch);
+			},
+		};
+
 		const g = renderer.renderPart({target: 'cell-pen', type: 'g'});
-		g.appendChild(renderer.renderPart({
-			type: 'rect',
-			attr: {
-				fill: '#c80',
-				x: translateX(-0.25),
-				y: translateY(0.5),
-				width: scale(0.5),
-				height: scale(0.5),
-			}
-		}));
-		renderPath(g, '#0c0', [
-			[0, -1],
-			[1, 0],
-			[0.5, 0],
-			[1, 0.5],
-			[-1, 0.5],
-			[-0.5, 0],
-			[-1, 0],
-		]);
+		for (const [themeName, themeRenderFn] of Object.entries(themes)) {
+			const themedContainer = renderer.renderPart({type: 'g'});
+			themedContainer.classList.add('bettree-themed');
+			themedContainer.classList.add('bettree-theme-' + themeName);
+			themeRenderFn(themedContainer);
+			g.appendChild(themedContainer);
+		}
 
 		return g;
 	};
@@ -146,8 +220,33 @@ window.addEventListener('DOMContentLoaded', () => {
 			);
 		};
 
+		const themeSetting = {
+			tag: 'multi',
+			group: 'visual',
+			name: 'bettree_theme',
+			content: 'Bet Tree Theme',
+			options: [
+				{value: 'default', content: 'Default'},
+				{value: 'christmas', content: 'Christmas'},
+			],
+			init: () => {
+				const validThemes = themeSetting.options.map(option => option.value);
+				if (!validThemes.includes(Framework.settings[themeSetting.name])) {
+					Framework.toggleSettingClass(themeSetting.name, validThemes[0]);
+					Framework.setSetting(themeSetting.name, validThemes[0]);
+				}
+			}
+		};
+		Framework.addSetting(themeSetting);
+
 		const style = document.createElement('style');
-		style.innerText = '.controls-main.tool-bettree .controls-input { opacity: 0; pointer-events: none; }';
+		style.innerHTML = `
+		   .controls-main.tool-bettree .controls-input { opacity: 0; pointer-events: none; }
+
+		   .bettree-themed { display: none; }
+
+		   ${themeSetting.options.map(({value}) => `body.setting-${themeSetting.name}-${value} .bettree-themed.bettree-theme-${value} { display: initial; }`).join('\n')}
+		`;
 		document.head.appendChild(style);
 
 		setTimeout(() => addTool(ToolBetTree), 10);
