@@ -96,7 +96,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			g.appendChild(this.renderPart({
 				type: 'path',
 				attr: {
-					fill: '#0c0',
+					fill: '#5BCEFA',
 					d: "M " + [
 						[0, -1],
 						[1, 0],
@@ -105,6 +105,38 @@ window.addEventListener('DOMContentLoaded', () => {
 						[-1, 0.5],
 						[-0.5, 0],
 						[-1, 0],
+					]
+						.map(([x, y]) => `${translateX(x)},${translateY(y)}`)
+						.join(" L") + " Z",
+				}
+			}));
+			g.appendChild(this.renderPart({
+				type: 'path',
+				attr: {
+					fill: '#F5A9B8',
+					d: "M " + [
+						[.3, -.7],
+						[1, 0],
+						[0.5, 0],
+						[.7, 0.2],
+						[-.7, 0.2],
+						[-0.5, 0],
+						[-1, 0],
+						[-.3,-.7],
+					]
+						.map(([x, y]) => `${translateX(x)},${translateY(y)}`)
+						.join(" L") + " Z",
+				}
+			}));
+			g.appendChild(this.renderPart({
+				type: 'path',
+				attr: {
+					fill: '#FFF',
+					d: "M " + [
+						[.9, -.1],
+						[.6, -0.4],
+						[-.6, -0.4],
+						[-.9, -.1],
 					]
 						.map(([x, y]) => `${translateX(x)},${translateY(y)}`)
 						.join(" L") + " Z",
