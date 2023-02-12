@@ -4,7 +4,7 @@
 // @version      0.5
 // @description  Add a bet tree control to SudokuPad
 // @author       Chameleon
-// @updateURL    https://github.com/yusitnikov/sudokupad-bet-tree/raw/main/sudokupad-bet-tree.user.js
+// @updateURL    https://github.com/emckee2006/sudokupad-bet-tree/raw/main/sudokupad-bet-tree.user.js
 // @match        https://crackingthecryptic.com/*
 // @match        https://*.crackingthecryptic.com/*
 // @match        https://sudokupad.app/*
