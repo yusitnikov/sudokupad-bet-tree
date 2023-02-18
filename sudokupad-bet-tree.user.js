@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      0.8
 // @description  Add a bet tree control to SudokuPad
-// @author       Chameleon
+// @author       Chameleon (+ theme by emckee2006)
 // @updateURL    https://github.com/yusitnikov/sudokupad-bet-tree/raw/main/sudokupad-bet-tree.user.js
 // @match        https://crackingthecryptic.com/*
 // @match        https://*.crackingthecryptic.com/*
@@ -126,6 +126,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 renderCircle(ch, '#fff', -0.03, -1.02, 0.03, 0.7);
                 g.appendChild(ch);
             },
+            // Theme idea and design by emckee2006
             trans_pride: g => {
                 const defs = renderer.renderPart({type: 'defs'});
                 const gradientId = 'trans-flag-grad' + (++autoIncrementId);
@@ -252,6 +253,7 @@ window.addEventListener('DOMContentLoaded', () => {
             options: [
                 {value: 'default', content: 'Default'},
                 {value: 'christmas', content: 'Christmas'},
+                // Theme idea and design by emckee2006
                 {value: 'trans_pride', content: 'Trans Pride'},
             ],
             init: () => {
