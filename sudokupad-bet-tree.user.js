@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SudokuPad Bet Tree
 // @namespace    http://tampermonkey.net/
-// @version      0.8
+// @version      0.9
 // @description  Add a bet tree control to SudokuPad
 // @author       Chameleon (+ theme by emckee2006)
 // @updateURL    https://github.com/yusitnikov/sudokupad-bet-tree/raw/main/sudokupad-bet-tree.user.js
@@ -279,15 +279,7 @@ window.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => addTool(ToolBetTree), 10);
     }
 
-    if (typeof Framework !== "undefined") {
-        if (Framework.app) {
-            init();
-        } else {
-            const coreStart = window.start;
-            window.start = () => {
-                coreStart();
-                init();
-            }
-        }
+    if (typeof Framework !== "undefined" && Framework.getApp) {
+        Framework.getApp().then(init);
     }
 });
